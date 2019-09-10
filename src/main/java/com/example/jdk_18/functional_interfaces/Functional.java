@@ -1,4 +1,4 @@
-package com.example.jdk_18.functional;
+package com.example.jdk_18.functional_interfaces;
 
 
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.example.jdk_18.functional;
+package com.example.jdk_18.functional_interfaces;
 
 
 //自定义函数式接口
