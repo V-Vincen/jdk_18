@@ -29,6 +29,7 @@ public class Lambda {
     public void m1() {
         //原来的写法
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 System.out.println("Vincent帅到掉渣...");
             }
