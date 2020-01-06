@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * @CreateDate: 2019/12/16 16:44
  * @Version: 1.0.0
  */
-public class StreamAPICreate {
+public class StreamAPI_Create {
 
     //创建 Stream 方式一：通过集合
     //default Stream<E> stream()：返回一个顺序流
