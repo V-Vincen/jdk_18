@@ -3,7 +3,9 @@ package com.example.jdk_18.stream_api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+//提供用于测试的数据
 public class EmployeeData {
 
     public static List<Employee> getEmployees(){
@@ -71,6 +73,22 @@ class Employee{
 
     public void setSalary(Double salary) {
         this.salary = salary;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(id, employee.id) &&
+                Objects.equals(name, employee.name) &&
+                Objects.equals(age, employee.age) &&
+                Objects.equals(salary, employee.salary);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age, salary);
     }
 
     @Override
