@@ -3,12 +3,14 @@ package com.example.jdk_18.lambda_exercise;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
  */
 public class LambdaTest {
     @Data
-    class Student {
+    private static class Student {
         private Integer id;
         private String name;
         private Integer age;
@@ -25,7 +27,7 @@ public class LambdaTest {
         private List<Fancy> fancies;
         private Subject subject;
 
-        public Student(Integer id, String name, Integer age, Integer interestType, List<Hobby> hobbies, List<Fancy> fancies, Subject subject) {
+        private Student(Integer id, String name, Integer age, Integer interestType, List<Hobby> hobbies, List<Fancy> fancies, Subject subject) {
             this.id = id;
             this.name = name;
             this.age = age;
@@ -52,10 +54,6 @@ public class LambdaTest {
             return code;
         }
 
-        public String getMessage() {
-            return message;
-        }
-
         public static InterestType getInterestTypeByCode(int code) {
             return Arrays.stream(InterestType.values()).filter(interestType -> interestType.getCode() == code).findFirst().orElse(null);
         }
@@ -63,12 +61,12 @@ public class LambdaTest {
     }
 
     @Data
-    class Hobby {
+    private static class Hobby {
         private String basketball;
         private String running;
         private String drinking;
 
-        public Hobby(String basketball, String running, String drinking) {
+        private Hobby(String basketball, String running, String drinking) {
             this.basketball = basketball;
             this.running = running;
             this.drinking = drinking;
@@ -76,12 +74,12 @@ public class LambdaTest {
     }
 
     @Data
-    class Fancy {
+    private static class Fancy {
         private String dance;
         private String takePhotos;
         private String meetGirls;
 
-        public Fancy(String dance, String takePhotos, String meetGirls) {
+        private Fancy(String dance, String takePhotos, String meetGirls) {
             this.dance = dance;
             this.takePhotos = takePhotos;
             this.meetGirls = meetGirls;
@@ -89,19 +87,19 @@ public class LambdaTest {
     }
 
     @Data
-    class Subject {
+    private static class Subject {
         private String english;
         private String chinese;
         private String mathematics;
 
-        public Subject(String english, String chinese, String mathematics) {
+        private Subject(String english, String chinese, String mathematics) {
             this.english = english;
             this.chinese = chinese;
             this.mathematics = mathematics;
         }
     }
 
-    public List<Student> getStudent() {
+    private List<Student> getStudent() {
         List<Student> list = Lists.newArrayList();
         list.add(new Student(100, "小明", 10, 1,
                 Lists.newArrayList(
@@ -137,7 +135,7 @@ public class LambdaTest {
     }
 
     @Data
-    class Person {
+    private static class Person {
         private Integer pid;
         private String pname;
         private Integer page;
@@ -149,23 +147,15 @@ public class LambdaTest {
     private final static BiConsumer<Person, Student> HOBBY = (person, student) -> {
         Optional.ofNullable(student.getHobbies())
                 .flatMap(hobbies -> hobbies.stream().findFirst())
-                .ifPresent(hobby -> {
-                    person.setInterest(hobby.getDrinking());
-                });
-        Optional.ofNullable(student.subject).ifPresent(subject -> {
-            person.setSubject(subject.getEnglish());
-        });
+                .ifPresent(hobby -> person.setInterest(hobby.getDrinking()));
+        Optional.ofNullable(student.subject).ifPresent(subject -> person.setSubject(subject.getEnglish()));
     };
 
     private final static BiConsumer<Person, Student> FANCY = (person, student) -> {
         Optional.ofNullable(student.getFancies())
                 .flatMap(fancies -> fancies.stream().findFirst())
-                .ifPresent(fancy -> {
-                    person.setInterest(fancy.getDance());
-                });
-        Optional.ofNullable(student.subject).ifPresent(subject -> {
-            person.setSubject(subject.getMathematics());
-        });
+                .ifPresent(fancy -> person.setInterest(fancy.getDance()));
+        Optional.ofNullable(student.subject).ifPresent(subject -> person.setSubject(subject.getMathematics()));
     };
 
     private final static ImmutableMap<InterestType, BiConsumer<Person, Student>> OF = ImmutableMap.of(
@@ -173,6 +163,9 @@ public class LambdaTest {
             InterestType.FANCY, FANCY
     );
 
+    /**
+     * BiConsumer<T, U> 实例
+     */
     @Test
     public void t() {
         List<Student> studentList = getStudent();
@@ -194,4 +187,65 @@ public class LambdaTest {
 
         System.out.println(collect);
     }
+
+
+    @Data
+    private static class trip {
+        private String departure;
+        private String destination;
+
+        private trip(String departure, String destination) {
+            this.departure = departure;
+            this.destination = destination;
+        }
+    }
+
+    private static final BinaryOperator<String> ACCUMULATOR = (v1, v2) -> {
+        if (StringUtils.isEmpty(v1)) {
+            return v2;
+        }
+        String[] item = StringUtils.split(v1, ",");
+        String[] lastOfItem = StringUtils.split(item[item.length - 1], "-");
+        String lastElement = lastOfItem[lastOfItem.length - 1];
+        String[] nextItem = StringUtils.split(v2, "-");
+        String startElement = nextItem[0];
+        if (StringUtils.equals(lastElement, startElement)) {
+            return v1 + "-" + nextItem[nextItem.length - 1];
+        }
+        return v1 + "," + v2;
+    };
+
+    @Test
+    public void t2() {
+        List<trip> list = Lists.newArrayList(
+                new trip("上海", "北京"),
+                new trip("北京", "上海"),
+                new trip("天津", "西安"),
+                new trip("拉萨", "灵芝"),
+                new trip("灵芝", "兰州"),
+                new trip("兰州", "西宁")
+        );
+
+        //[上海-北京-上海,天津-西安,拉萨-灵芝-兰州-西宁]
+        String reduce = list.stream()
+                .map(t -> String.format("%s-%s", t.getDeparture(), t.getDestination()))
+                .reduce("", ACCUMULATOR);
+        System.out.println(reduce);
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
