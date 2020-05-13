@@ -200,6 +200,16 @@ public class LambdaTest {
         }
     }
 
+    /**
+     * reduce 规则：
+     * 例子：1.上海 -> 北京
+     *      2.北京 -> 上海
+     *      3.天津 -> 西安
+     *      4.拉萨 -> 灵芝
+     *      5.灵芝 -> 兰州
+     *      6.兰州 -> 西宁
+     * 展示效果：上海-北京-上海,天津-西安,拉萨-灵芝-兰州-西宁
+     */
     private static final BinaryOperator<String> ACCUMULATOR = (v1, v2) -> {
         if (StringUtils.isEmpty(v1)) {
             return v2;
