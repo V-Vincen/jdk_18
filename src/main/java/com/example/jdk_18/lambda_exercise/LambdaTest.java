@@ -242,8 +242,6 @@ public class LambdaTest {
                 .reduce("", ACCUMULATOR);
         System.out.println(reduce);
     }
-
-
 }
 
 
