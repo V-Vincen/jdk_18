@@ -254,7 +254,6 @@ public class LambdaTest {
         String str5 = "2012/07/21";
         String str6 = "2012/7/21 18:00:00";
         String str7 = "2012/07/21 18:00:00";
-
         boolean dateTime = matchDateTime(str);
         boolean dateTime1 = matchDateTime(str1);
         boolean dateTime2 = matchDateTime(str2);
