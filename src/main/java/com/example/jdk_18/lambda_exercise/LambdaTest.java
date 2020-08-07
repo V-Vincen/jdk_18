@@ -243,38 +243,57 @@ public class LambdaTest {
         System.out.println(reduce);
     }
 
+    public static final String YYYYMMDD = "yyyyMMdd";
+    public static final String YYYY_MM_DD = "yyyy-MM-dd";
+    public static final String YYYY_MM_DD_HH_MM = "yyyy-MM-dd HH:mm";
+    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static final String YYYY__MM__DD = "yyyy/MM/dd";
+    public static final String YYYY__MM__DD_HH_MM = "yyyy/MM/dd HH:mm";
+    public static final String YYYY__MM__DD_HH_MM_SS = "yyyy/MM/dd HH:mm:ss";
 
     @Test
     public void t3() {
-        String str = "2012-7-21";
-        String str1 = "2012-07-21";
-        String str2 = "2012-7-21 18:00:00";
-        String str3 = "2012-07-21 18:00:00";
-        String str4 = "2012/7/21";
-        String str5 = "2012/07/21";
-        String str6 = "2012/7/21 18:00:00";
-        String str7 = "2012/07/21 18:00:00";
-        boolean dateTime = matchDateTime(str);
-        boolean dateTime1 = matchDateTime(str1);
-        boolean dateTime2 = matchDateTime(str2);
-        boolean dateTime3 = matchDateTime(str3);
-        boolean dateTime4 = matchDateTime(str4);
-        boolean dateTime5 = matchDateTime(str5);
-        boolean dateTime6 = matchDateTime(str6);
-        boolean dateTime7 = matchDateTime(str7);
-        System.out.println(str + ": " + dateTime);
-        System.out.println(str1 + ": " + dateTime1);
-        System.out.println(str2 + ": " + dateTime2);
-        System.out.println(str3 + ": " + dateTime3);
-        System.out.println(str4 + ": " + dateTime4);
-        System.out.println(str5 + ": " + dateTime5);
-        System.out.println(str6 + ": " + dateTime6);
-        System.out.println(str7 + ": " + dateTime7);
+        @Data
+        class DateValidate {
+            private String date;
+            private String dateFormat;
+
+            public DateValidate(String date, String dateFormat) {
+                this.date = date;
+                this.dateFormat = dateFormat;
+            }
+        }
+        List<DateValidate> list = Lists.newArrayList(
+                new DateValidate("202086", YYYYMMDD),
+                new DateValidate("2020086", YYYYMMDD),
+                new DateValidate("2020806", YYYYMMDD),
+                new DateValidate("20200806", YYYYMMDD),
+                new DateValidate("20200806 19", null),
+                new DateValidate("20200806 19:00", null),
+                new DateValidate("20200806 19:00:00", null),
+                new DateValidate("2020-8-06", YYYY_MM_DD),
+                new DateValidate("2020-08-6", YYYY_MM_DD),
+                new DateValidate("2020-08-06", YYYY_MM_DD),
+                new DateValidate("2020-08-06 19", null),
+                new DateValidate("2020-08-06 19:00", YYYY_MM_DD_HH_MM),
+                new DateValidate("2020-08-06 19:00:00", YYYY_MM_DD_HH_MM_SS),
+                new DateValidate("2020/8/06", YYYY__MM__DD),
+                new DateValidate("2020/08/6", YYYY__MM__DD),
+                new DateValidate("2020/08/06", YYYY__MM__DD),
+                new DateValidate("2020/08/06 19", null),
+                new DateValidate("2020/08/06 19:00", YYYY__MM__DD_HH_MM),
+                new DateValidate("2020/08/06 19:00:00", YYYY__MM__DD_HH_MM_SS)
+        );
+
+        list.forEach(item -> {
+            boolean matchDateTime = matchDateTime(item.getDate());
+            System.out.println(item.getDate() + " (" + item.getDateFormat() + ")：matchDateTime -> " + matchDateTime);
+        });
+        System.out.println();
     }
 
     /**
      * 时间校验
-     *
      * @param dateTime
      * @return
      */
@@ -282,7 +301,6 @@ public class LambdaTest {
         if (StringUtils.isEmpty(dateTime)) {
             return false;
         }
-        //2020-7-21 18:00:00，从空格截取
         String[] dt = dateTime.split("\\s+");
         if (dt.length == 1) {
             return dateMatch(dt[0], "/") || dateMatch(dt[0], "-");
@@ -293,53 +311,65 @@ public class LambdaTest {
         }
     }
 
+    private static boolean timeMatch(String s, String split) {
+        if (StringUtils.isEmpty(s)) {
+            return true;
+        }
+
+        s = StringUtils.trim(s);
+        String[] time = StringUtils.split(s, split);
+        boolean isNumber = Arrays.stream(time).anyMatch(StringUtils::isNumeric);
+        if (!isNumber) {
+            return false;
+        }
+
+        if (time.length != 3) {
+            return false;
+        }
+
+        if (time[0].length() > 2 || Integer.parseInt(time[0]) > 24) {
+            return false;
+        }
+
+
+        if (time[1].length() > 2 || Integer.parseInt(time[1]) > 60) {
+            return false;
+        }
+
+        if (time[2].length() > 2 || Integer.parseInt(time[2]) > 60) {
+            return false;
+        }
+
+        return true;
+    }
+
     private static boolean dateMatch(String s, String spl) {
         if (StringUtils.isEmpty(s)) {
             return false;
         }
         s = StringUtils.trim(s);
         String[] date = StringUtils.split(s, spl);
-        boolean isNumber = Arrays.stream(date).allMatch(StringUtils::isNumeric);
+        boolean isNumber = Arrays.stream(date).anyMatch(StringUtils::isNumeric);
         if (!isNumber) {
             return false;
         }
+
         if (date.length != 3) {
             return false;
         }
+
         if (date[0].length() != 4) {
             return false;
         }
+
         if (Integer.parseInt(date[1]) > 12) {
             return false;
         }
+
         if (Integer.parseInt(date[2]) > 31) {
             return false;
         }
-        return true;
-    }
 
-    private static boolean timeMatch(String s, String split) {
-        if (StringUtils.isEmpty(s)) {
-            return true;
-        }
-        s = StringUtils.trim(s);
-        String[] time = StringUtils.split(s, split);
-        boolean isNumber = Arrays.stream(time).allMatch(StringUtils::isNumeric);
-        if (!isNumber) {
-            return false;
-        }
-        if (time.length != 3) {
-            return false;
-        }
-        if (time[0].length() > 2 || Integer.parseInt(time[0]) > 24) {
-            return false;
-        }
-        if (time[1].length() > 2 || Integer.parseInt(time[1]) > 60) {
-            return false;
-        }
-        if (time[2].length() > 2 || Integer.parseInt(time[2]) > 60) {
-            return false;
-        }
         return true;
     }
 }
