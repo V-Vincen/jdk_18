@@ -1,13 +1,19 @@
 package com.example.jdk_18.lambda_exercise;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -187,6 +193,7 @@ public class LambdaTest {
 
         System.out.println(collect);
     }
+//============================================================================================================================================================================================================
 
 
     @Data
@@ -225,6 +232,9 @@ public class LambdaTest {
         return v1 + "," + v2;
     };
 
+    /**
+     * T reduce(T identity, BinaryOperator<T> accumulator)
+     */
     @Test
     public void t2() {
         List<trip> list = Lists.newArrayList(
@@ -242,6 +252,8 @@ public class LambdaTest {
                 .reduce("", ACCUMULATOR);
         System.out.println(reduce);
     }
+//============================================================================================================================================================================================================
+
 
     public static final String YYYYMMDD = "yyyyMMdd";
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
@@ -251,6 +263,9 @@ public class LambdaTest {
     public static final String YYYY__MM__DD_HH_MM = "yyyy/MM/dd HH:mm";
     public static final String YYYY__MM__DD_HH_MM_SS = "yyyy/MM/dd HH:mm:ss";
 
+    /**
+     * allMatch(Predicate p)
+     */
     @Test
     public void t3() {
         @Data
@@ -294,6 +309,7 @@ public class LambdaTest {
 
     /**
      * 时间校验
+     *
      * @param dateTime
      * @return
      */
@@ -372,6 +388,110 @@ public class LambdaTest {
 
         return true;
     }
+//============================================================================================================================================================================================================
+
+
+    @Test
+    public void t4() {
+        @Data
+        class Stu {
+            private Integer id;
+            private String name;
+            private Long money;
+
+            public Stu(Integer id, String name, Long money) {
+                this.id = id;
+                this.name = name;
+                this.money = money;
+            }
+        }
+
+        List<Stu> list = Lists.newArrayList(
+                new Stu(1, "小明", 100L),
+                new Stu(1, "小红", 200L),
+                new Stu(2, "小黄", 200L),
+                new Stu(2, "小紫", 200L)
+        );
+
+        Map<Integer, List<Stu>> collect = list.stream().collect(Collectors.groupingBy(Stu::getId));
+        System.out.println(JSON.toJSONString(collect, SerializerFeature.PrettyFormat));
+    }
+//============================================================================================================================================================================================================
+
+    @Data
+    private static class TravelInfo {
+        private String trip;
+        private String hotelName;
+        private List<Order> orders;
+
+        public TravelInfo(String trip, String hotelName, List<Order> orders) {
+            this.trip = trip;
+            this.hotelName = hotelName;
+            this.orders = orders;
+        }
+    }
+
+    @Data
+    private static class Order {
+        private Long orderId;
+        private List<Travellers> travellers;
+
+        public Order(Long orderId, List<Travellers> travellers) {
+            this.orderId = orderId;
+            this.travellers = travellers;
+        }
+    }
+
+    @Data
+    private static class Travellers {
+        private String userName;
+        private String email;
+
+        public Travellers() {
+        }
+
+        public Travellers(String userName, String email) {
+            this.userName = userName;
+            this.email = email;
+        }
+    }
+
+    /**
+     * flatMap(Function f)：扁平化
+     */
+    @Test
+    public void t5() {
+        TravelInfo travelInfo = new TravelInfo("三人行", "天上人间",
+                Lists.newArrayList(
+                        new Order(123456789L, Lists.newArrayList(
+                                new Travellers("zhangSanFirst", "zhangSanFirst@qq.com"),
+                                new Travellers("zhangSanSecond", "zhangSanSecond@qq.com")
+                        )),
+                        new Order(987654321L, Lists.newArrayList(
+                                new Travellers("liSiFirst", "zhangSanFirst@qq.com"),
+                                new Travellers("liSiSecond", "zhangSanSecond@qq.com")
+                        )),
+                        new Order(987654322L, Lists.newArrayList(
+                                new Travellers("wangWu", "wangWu@qq.com")
+                        )),
+                        new Order(987654323L, Lists.newArrayList()),
+                        new Order(987654323L, null)
+                ));
+        System.out.println(JSON.toJSONString(travelInfo, SerializerFeature.PrettyFormat));
+        System.out.println();
+
+        List<String> email = travelInfo.getOrders().stream()
+                .filter(Objects::nonNull)
+                .map(Order::getTravellers)
+                .filter(CollectionUtils::isNotEmpty)
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .map(Travellers::getEmail)
+                .collect(Collectors.toList());
+        System.out.println(email);
+    }
+
+
 }
 
 
