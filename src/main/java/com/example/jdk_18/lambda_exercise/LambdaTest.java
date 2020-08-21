@@ -2,6 +2,7 @@ package com.example.jdk_18.lambda_exercise;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import lombok.Data;
@@ -402,7 +403,7 @@ public class LambdaTest {
             private String name;
             private Long money;
 
-            public Stu(Integer id, String name, Long money) {
+            private Stu(Integer id, String name, Long money) {
                 this.id = id;
                 this.name = name;
                 this.money = money;
@@ -427,7 +428,7 @@ public class LambdaTest {
         private String hotelName;
         private List<Order> orders;
 
-        public TravelInfo(String trip, String hotelName, List<Order> orders) {
+        private TravelInfo(String trip, String hotelName, List<Order> orders) {
             this.trip = trip;
             this.hotelName = hotelName;
             this.orders = orders;
@@ -439,7 +440,7 @@ public class LambdaTest {
         private Long orderId;
         private List<Travellers> travellers;
 
-        public Order(Long orderId, List<Travellers> travellers) {
+        private Order(Long orderId, List<Travellers> travellers) {
             this.orderId = orderId;
             this.travellers = travellers;
         }
@@ -453,7 +454,7 @@ public class LambdaTest {
         public Travellers() {
         }
 
-        public Travellers(String userName, String email) {
+        private Travellers(String userName, String email) {
             this.userName = userName;
             this.email = email;
         }
@@ -492,6 +493,148 @@ public class LambdaTest {
                 .map(Travellers::getEmail)
                 .collect(Collectors.toList());
         System.out.println(email);
+    }
+//============================================================================================================================================================================================================
+
+
+    @Data
+    private class PaymentDto {
+        private Long id;
+        private String liqAccountName;
+        /**
+         * 来款业务：COMPANY-企业来款；OFFLINE-订单线下收款
+         */
+        private String paymentMode;
+        private List<ClaimDto> claimDto;
+        private List<OrderClaimDto> orderClaimDto;
+
+        public PaymentDto(Long id, String liqAccountName, String paymentMode, List<ClaimDto> claimDto, List<OrderClaimDto> orderClaimDto) {
+            this.id = id;
+            this.liqAccountName = liqAccountName;
+            this.paymentMode = paymentMode;
+            this.claimDto = claimDto;
+            this.orderClaimDto = orderClaimDto;
+        }
+    }
+
+    @Data
+    private static class ClaimDto {
+        private Long paymentId;
+        private String partnerName;
+        private Integer amount;
+
+        public ClaimDto(Long paymentId, String partnerName, Integer amount) {
+            this.paymentId = paymentId;
+            this.partnerName = partnerName;
+            this.amount = amount;
+        }
+    }
+
+    @Data
+    private static class OrderClaimDto {
+        private Long paymentId;
+        private Integer amount;
+
+        public OrderClaimDto(Long paymentId, Integer amount) {
+            this.paymentId = paymentId;
+            this.amount = amount;
+        }
+    }
+
+    @Data
+    private static class PaymentApiDto {
+        private Long id;
+        private String liqAccountName;
+        private String paymentMode;
+        private Long paymentId;
+        private String partnerName;
+        private Integer amount;
+    }
+
+    private List<PaymentDto> getPaymentDto() {
+        List<PaymentDto> list = Lists.newArrayList();
+        list.add(new PaymentDto(123456789L, "收款账户_COMPANY", "COMPANY",
+                Lists.newArrayList(
+                        new ClaimDto(123456789L, "企业名称1", 999),
+                        new ClaimDto(123456789L, "企业名称2", 888),
+                        new ClaimDto(123456789L, "企业名称3", 777)
+                ),
+                Lists.newArrayList(
+                        new OrderClaimDto(123456789L, 666),
+                        new OrderClaimDto(123456789L, 555)
+                )));
+        list.add(new PaymentDto(987654321L, "收款账户_OFFLINE", "OFFLINE",
+                Lists.newArrayList(
+                        new ClaimDto(987654321L, "企业名称1", 999),
+                        new ClaimDto(987654321L, "企业名称2", 888)
+                ),
+                Lists.newArrayList(
+                        new OrderClaimDto(987654321L, 666),
+                        new OrderClaimDto(987654321L, 555)
+                )));
+        list.add(new PaymentDto(888888888L, "收款账户", null, null, null));
+        return list;
+    }
+
+
+    /**
+     * Optional.ofNullable(T t) 和 T orElse(T other)
+     */
+    @Test
+    public void t6() {
+        List<PaymentDto> paymentDtos = getPaymentDto();
+        paymentDtos.forEach(System.out::println);
+        System.out.println();
+
+        /**
+         * 根据 paymentMode 把 claimDto、orderClaimDto 集合数据查分为单条数据
+         */
+        List<PaymentApiDto> collect = paymentDtos
+                .stream()
+                .map(paymentDto -> {
+                    PaymentApiDto apiDto = new PaymentApiDto();
+                    apiDto.setId(paymentDto.getId());
+                    apiDto.setLiqAccountName(paymentDto.getLiqAccountName());
+                    apiDto.setPaymentMode(paymentDto.getPaymentMode());
+                    ImmutableList<PaymentApiDto> defaultList = ImmutableList.of(apiDto);
+
+                    if (StringUtils.equals(paymentDto.getPaymentMode(), "COMPANY")) {
+                        return Optional.ofNullable(paymentDto.getClaimDto())
+                                .map(claimDtos -> claimDtos.stream()
+                                        .map(claimDto -> {
+                                            PaymentApiDto paymentApiDto = new PaymentApiDto();
+                                            paymentApiDto.setId(paymentDto.getId());
+                                            paymentApiDto.setLiqAccountName(paymentDto.getLiqAccountName());
+                                            paymentApiDto.setPaymentMode(paymentDto.getPaymentMode());
+                                            paymentApiDto.setPaymentId(claimDto.getPaymentId());
+                                            paymentApiDto.setPartnerName(claimDto.getPartnerName());
+                                            paymentApiDto.setAmount(claimDto.getAmount());
+                                            return paymentApiDto;
+                                        })
+                                        .collect(Collectors.toList())
+                                )
+                                .orElse(defaultList);
+                    }
+                    if (StringUtils.equals(paymentDto.getPaymentMode(), "OFFLINE")) {
+                        return Optional.ofNullable(paymentDto.getOrderClaimDto())
+                                .map(orderClaimDtos -> orderClaimDtos.stream()
+                                        .map(orderClaimDto -> {
+                                            PaymentApiDto paymentApiDto = new PaymentApiDto();
+                                            paymentApiDto.setId(paymentDto.getId());
+                                            paymentApiDto.setLiqAccountName(paymentDto.getLiqAccountName());
+                                            paymentApiDto.setPaymentMode(paymentDto.getPaymentMode());
+                                            paymentApiDto.setAmount(orderClaimDto.getAmount());
+                                            return paymentApiDto;
+                                        })
+                                        .collect(Collectors.toList())
+                                )
+                                .orElse(defaultList);
+                    }
+                    return defaultList;
+                })
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        collect.forEach(System.out::println);
     }
 
 
