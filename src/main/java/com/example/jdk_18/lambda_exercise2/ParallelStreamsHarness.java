@@ -3,15 +3,12 @@ package com.example.jdk_18.lambda_exercise2;
 
 import org.junit.Test;
 
-import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
 /**
  * @author vincent
  */
 public class ParallelStreamsHarness {
-    public static final ForkJoinPool FORK_JOIN_POOL = new ForkJoinPool();
-
     @Test
     public void parallelStreamsTest() {
         System.out.println("Iterative Sum done in: " + measurePerf(ParallelStreams::iterativeSum, 10_000_000L) + " msecs");

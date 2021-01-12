@@ -59,5 +59,4 @@ public class LambdaTest2 {
         log.info("苹果数量：{}个, 耗时：{}s", appleList.size(), (end.getTime() - begin.getTime()) / 1000);
         //14:56:45.434 [main] INFO com.example.jdk_18.lambda_exercise.LambdaTest2 - 苹果数量：3个, 耗时：1s
     }
-
 }
