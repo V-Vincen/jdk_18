@@ -13,29 +13,26 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
-  * @ProjectName:
-  * @Package:        com.example.jdk_18.method_constructor_references
-  * @ClassName:      MethodReferences
-  * @Description:
-  *                  方法引用：
-  *                  使用情景：当要传递给 Lambda 体的操作，已经有实现的方法了，可以使用方法引用。
-  *
-  *                  方法引用，本质上就是 Lambda 表达式，而 Lambda 表达式作为函数接口的实例。所以方法引用，也是函数式接口的实例。
-  *
-  *                  使用格式：类（或对象） :: 方法名
-  *
-  *                  具体分为如下三种情况：
-  *                  1) 对象 :: 非静态方法
-  *                  2) 类 :: 静态方法
-  *                  3) 类 :: 非静态方法
-  *
-  *                  方法引用的使用要求：实现接口的抽象方法的参数列表和返回值类型，必须与方法引用的方法的参数列表和返回值类型保持一致。
-  *
-  *
-  * @Author:         Mr.Vincent
-  * @CreateDate:     2019/9/10 14:38
-  * @Version:        1.0.0
-  */
+ * @ProjectName:
+ * @Package: com.example.jdk_18.method_constructor_references
+ * @ClassName: MethodReferences
+ * @Description: 方法引用：
+ * 使用情景：当要传递给 Lambda 体的操作，已经有实现的方法了，可以使用方法引用。
+ * <p>
+ * 方法引用，本质上就是 Lambda 表达式，而 Lambda 表达式作为函数接口的实例。所以方法引用，也是函数式接口的实例。
+ * <p>
+ * 使用格式：类（或对象） :: 方法名
+ * <p>
+ * 具体分为如下三种情况：
+ * 1) 对象 :: 非静态方法
+ * 2) 类 :: 静态方法
+ * 3) 类 :: 非静态方法
+ * <p>
+ * 方法引用的使用要求：实现接口的抽象方法的参数列表和返回值类型，必须与方法引用的方法的参数列表和返回值类型保持一致。
+ * @Author: Mr.Vincent
+ * @CreateDate: 2019/9/10 14:38
+ * @Version: 1.0.0
+ */
 public class MethodReferences {
 
     //情况一：对象 :: 实例方法

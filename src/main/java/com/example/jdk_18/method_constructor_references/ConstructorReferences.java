@@ -12,22 +12,19 @@ import java.util.function.Supplier;
 
 /**
  * @ProjectName:
- * @Package:        com.example.jdk_18.method_constructor_references
- * @ClassName:      ConstructorReferences
- * @Description:
- *                  构造方法引用：
- *                  1) 构造器引用：
- *                  组成语法格式：Class::new
- *                  和方法引用类似，函数接口的抽象方法的形参列表和构造器的形参列表一致；
- *                  抽象方法的返回值类型即为构造器所属的类的类型。
- *
- *                  2) 数组引用：
- *                  可以把数组看做事一个特殊的类，则写法与构造器引用一致。
- *
- *
- * @Author:         Mr.Vincent
- * @CreateDate:     2019/9/10 16:47
- * @Version:        1.0.0
+ * @Package: com.example.jdk_18.method_constructor_references
+ * @ClassName: ConstructorReferences
+ * @Description: 构造方法引用：
+ * 1) 构造器引用：
+ * 组成语法格式：Class::new
+ * 和方法引用类似，函数接口的抽象方法的形参列表和构造器的形参列表一致；
+ * 抽象方法的返回值类型即为构造器所属的类的类型。
+ * <p>
+ * 2) 数组引用：
+ * 可以把数组看做事一个特殊的类，则写法与构造器引用一致。
+ * @Author: Mr.Vincent
+ * @CreateDate: 2019/9/10 16:47
+ * @Version: 1.0.0
  */
 public class ConstructorReferences {
 

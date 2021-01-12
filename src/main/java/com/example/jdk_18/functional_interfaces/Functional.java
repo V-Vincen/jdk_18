@@ -12,21 +12,18 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
-  * @ProjectName:
-  * @Package:        com.example.jdk_18.functional
-  * @ClassName:      Functional
-  * @Description:
-  *                  Java 内置的4大核心函数式接口
-  *                  1) 消费型接口 Consumer<T>：void accept(T t)
-  *                  2) 供给型接口 Supplier<T>：T get()
-  *                  3) 函数型接口 Function<T,R>：R apply(T t)
-  *                  4) 断定型接口 Predicate<T>：boolean test(T t)
-  *
-  *
-  * @Author:         Mr.Vincent
-  * @CreateDate:     2019/9/10 2:27
-  * @Version:        1.0.0
-  */
+ * @ProjectName:
+ * @Package: com.example.jdk_18.functional
+ * @ClassName: Functional
+ * @Description: Java 内置的4大核心函数式接口
+ * 1) 消费型接口 Consumer<T>：void accept(T t)
+ * 2) 供给型接口 Supplier<T>：T get()
+ * 3) 函数型接口 Function<T,R>：R apply(T t)
+ * 4) 断定型接口 Predicate<T>：boolean test(T t)
+ * @Author: Mr.Vincent
+ * @CreateDate: 2019/9/10 2:27
+ * @Version: 1.0.0
+ */
 public class Functional {
 
     //作为参数传递 Lambda 表达式（自定义函数式接口）
@@ -80,7 +77,7 @@ public class Functional {
 
     //断定型接口 Predicate<T>：boolean test(T t)
     @Test
-    public void m2(){
+    public void m2() {
         //原来的写法
         List<String> list = Arrays.asList("北京", "南京", "天津", "东京", "西京", "普京");
         List<String> filterStrs = filterString(list, new Predicate<String>() {

@@ -11,9 +11,7 @@ import java.util.stream.Stream;
  * @ProjectName:
  * @Package: com.example.jdk_18.stream_api
  * @ClassName: StreamAPI
- * @Description:
- *
- * 1.Stream 关注的是对数组的运算，与 CPU 打交道集合关注的是数组的存储，与内存打交道
+ * @Description: 1.Stream 关注的是对数组的运算，与 CPU 打交道集合关注的是数组的存储，与内存打交道
  * （1） Stream 自己不会存储元素。
  * （2） Stream 不会改变源对象。相反，他们会返会一个持有结果的新 Stream。
  * （3） Stream 操作是延迟执行，这意味着他们会等到需要结果的时候才执行。
@@ -22,7 +20,6 @@ import java.util.stream.Stream;
  * （1） Stream 的实例化
  * （2） 一个中间操作链，对数据源的数据进行处理
  * （3） 终止操作
- *
  * @Author: Mr.Vincent
  * @CreateDate: 2019/12/16 16:44
  * @Version: 1.0.0

@@ -5,24 +5,20 @@ import org.junit.Test;
 import java.util.Comparator;
 import java.util.function.Consumer;
 
- /**
-  * @ProjectName:
-  * @Package:        com.example.jdk_18.lambda_expressions
-  * @ClassName:      Lambda
-  * @Description:
-  *                  Lambda 表达式的语法使用(六中情况)
-  *
-  *                  Lambda 表达式本质：作为函数式接口（只有一个抽象方法的接口）的实例，Lambda 表达式和方法引用,只能用在函数式接口上。
-  *                  总结：
-  *                  -> 左边：lambda 形参列表的参数类型可以省略（类型推断）；如果 lambda 形参列表只有一个参数，其 '()' 可以省略
-  *                  -> 右边：lambda 体应该使用 '{}' 包裹；如果 lambda 体只有一条执行语句（可以是 return 语句），可以省略 '{}' 和 return 关键字
-  *
-  *
-  *
-  * @Author:         Mr.Vincent
-  * @CreateDate:     2019/9/9 17:11
-  * @Version:        1.0.0
-  */
+/**
+ * @ProjectName:
+ * @Package: com.example.jdk_18.lambda_expressions
+ * @ClassName: Lambda
+ * @Description: Lambda 表达式的语法使用(六中情况)
+ * <p>
+ * Lambda 表达式本质：作为函数式接口（只有一个抽象方法的接口）的实例，Lambda 表达式和方法引用,只能用在函数式接口上。
+ * 总结：
+ * -> 左边：lambda 形参列表的参数类型可以省略（类型推断）；如果 lambda 形参列表只有一个参数，其 '()' 可以省略
+ * -> 右边：lambda 体应该使用 '{}' 包裹；如果 lambda 体只有一条执行语句（可以是 return 语句），可以省略 '{}' 和 return 关键字
+ * @Author: Mr.Vincent
+ * @CreateDate: 2019/9/9 17:11
+ * @Version: 1.0.0
+ */
 public class Lambda {
     //语法格式一：无参，无返回值
     @Test
